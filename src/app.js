@@ -15,7 +15,7 @@ const app = express()
 // )
 
 app.use(cors({
-  origin: "http://localhost:3000",
+  origin: config.corsOrigin,
   credentials: true
 }));
 app.use(bodyParser.json({ limit: "16kb" }))

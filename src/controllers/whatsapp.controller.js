@@ -75,10 +75,11 @@ const checkout = async (req, res) => {
 
 const webhook = async (req, res) => {
   const twiml = new twilio.twiml.MessagingResponse();
+  console.log(req.body, 'requtsisssssssssss')
 
   try {
     const incomingMsg = req.body.Body?.trim();
-    const from = req.body.From?.replace("whatsapp:", "");
+    const from = req.body.From?.replace("whatsapp:+91", "");
 
     if (!from || !incomingMsg) {
       twiml.message("⚠️ Invalid request. Please send a valid message.");

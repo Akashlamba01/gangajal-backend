@@ -23,25 +23,6 @@ router.route("/checkout").post(
   checkout
 );
 
-router.route('/webhook').post(
-  celebrate({
-    body: Joi.object({
-      From: Joi.string()
-        .pattern(/^whatsapp:\+\d{10,15}$/)
-        .required()
-        .messages({
-          "string.pattern.base": "Invalid WhatsApp number format. Must be 'whatsapp:+<countrycode><number>'",
-          "any.required": "Missing sender number (From).",
-        }),
-      Body: Joi.string()
-        .allow("")
-        .required()
-        .messages({
-          "any.required": "Message body (Body) is required.",
-        }),
-    }),
-  }),
-  webhook
-)
+router.route('/webhook').post(webhook)
 
 export default router;

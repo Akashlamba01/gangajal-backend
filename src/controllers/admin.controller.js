@@ -125,25 +125,9 @@ const deleteProduct = async (req, res) => {
   }
 };
 
-const getProducts = async (req, res) => {
-  try {
-    const products = await Product.find();
-
-    return ApiResponse.successOk(res, "Products retrieved successfully!", products);
-  } catch (err) {
-    console.error("Get Products Error:", err);
-    return ApiResponse.fail(
-      res,
-      "Internal server error.",
-      process.env.NODE_ENV === "development" ? { error: err.message } : null
-    );
-  }
-};
-
 export {
   adminLogin,
   createProduct,
   updateProduct,
-  deleteProduct,
-  getProducts
+  deleteProduct
 }

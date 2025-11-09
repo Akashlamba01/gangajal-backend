@@ -25,16 +25,27 @@ const checkout = async (req, res) => {
 
     const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
 
-    const cartIds = cart.map(item => item.id)
-    const products = await Product.find({ _id: { $in: cartIds } })
+    const prodtIds = cart.map(item => item.id)
+    const products = await Product.find({ _id: { $in: prodtIds } }).lean();
 
-    if (products.length != cartIds.length) {
+    const cartMap = new Map(cart.map(item => [item.id, item]));
+
+    const productsWithCartData = products.map(product => {
+      const cartItem = cartMap.get(product._id.toString());
+      return {
+        ...product,
+        qty: cartItem?.qty ?? 1,
+        price: cartItem?.price ?? product.price,
+      };
+    });
+
+    if (productsWithCartData.length != prodtIds.length) {
       return ApiResponse.fail(res, "Somting was wrong in product selection!")
     }
 
     await TempOrder.findOneAndUpdate(
       { phone: to },
-      { phone: to, step: "awaiting_confirmation", cartIds, total, createdAt: new Date() },
+      { phone: to, step: "awaiting_confirmation", cart: productsWithCartData, total, createdAt: new Date() },
       { upsert: true, new: true }
     );
 
@@ -86,7 +97,7 @@ const webhook = async (req, res) => {
       return res.type("text/xml").send(twiml.toString());
     }
 
-    const user = await TempOrder.findOne({ phone: from });
+    const user = await TempOrder.findOne({ phone: from }).populate("cart", "");
 
     if (!user) {
       twiml.message(
@@ -167,7 +178,7 @@ const webhook = async (req, res) => {
             address: user.address,
             pincode: user.pincode,
             phone: user.phone,
-            cart: user.cart || [],
+            cart: cart || [],
             status: "confirmed",
             createdAt: new Date(),
           });

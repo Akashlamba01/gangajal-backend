@@ -22,8 +22,7 @@ const TempOrderSchema = new mongoose.Schema(
     },
     cart: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Product",
+        type: Object
       },
     ],
     total: { type: Number, default: 0, min: 0 },

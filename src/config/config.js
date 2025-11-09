@@ -28,4 +28,7 @@ export const config = {
   cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET,
   cloudinaryProduct: process.env.CLOUDINARY_PRODUCT_FOLDER,
   cloudinaryProductRatting: process.env.CLOUDINARY_PRODUCT_RATTING,
+
+  razorpayApiKey: process.env.RAZORPAY_API_KEY,
+  razorpayApiSecret: process.env.RAZORPAY_API_SECRET
 }

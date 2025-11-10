@@ -4,6 +4,9 @@ import Razorpay from 'razorpay';
 import crypto from 'crypto';
 import ApiResponse from "../utils/api.responses.js";
 
+const PAYMENT_SUCCESS_URL = "https://gangajal.onrender.com/payment-success";
+// const PAYMENT_SUCCESS_URL = "http://localhost:3000/payment-success";
+
 const getProducts = async (req, res) => {
   try {
     const products = await Product.find();
@@ -33,6 +36,7 @@ const checkout = async (req, res) => {
     };
 
     const order = await instance.orders.create(options);
+    console.log(order, 'this is order');
     return ApiResponse.successOk(res, "Order created successfully", order);
 
   } catch (error) {
@@ -67,7 +71,7 @@ const paymentVerification = async (req, res) => {
     // });
 
     return res.redirect(
-      `http://localhost:3000/paymentsuccess?reference=${razorpay_payment_id}`
+      `${PAYMENT_SUCCESS_URL}?reference=${razorpay_payment_id}`
     );
   } else {
     return res.status(200).json({

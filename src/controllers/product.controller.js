@@ -3,6 +3,7 @@ import Product from "../models/Product.model.js";
 import Razorpay from 'razorpay';
 import crypto from 'crypto';
 import ApiResponse from "../utils/api.responses.js";
+import Order from "../models/Order.model.js";
 
 const PAYMENT_SUCCESS_URL = "https://gangajal.onrender.com/payment-success";
 // const PAYMENT_SUCCESS_URL = "http://localhost:3000/payment-success";
@@ -29,16 +30,68 @@ const instance = new Razorpay({
 
 const checkout = async (req, res) => {
   try {
+
+    const {
+      fullName,
+      phone,
+      email,
+      address,
+      city,
+      state,
+      pincode,
+      dist,
+      landmark,
+      cart,
+      totalAmount,
+      paymentMethod,
+      paymentStatus,
+      status
+    } = req.body;
+
+    const newCart = cart.map(item => {
+      return {
+        productId: item.id,
+        name: item.name,
+        price: item.price,
+        qty: item.qty
+      };
+    })
+
+    const orderData = await Order.create({
+      customerName: fullName,
+      phone,
+      email,
+      address: { street: address, city, state, dist, pincode, landmark },
+      cart: newCart,
+      totalAmount,
+      paymentMethod,
+      paymentStatus,
+      status
+    });
+
+    if (paymentMethod === 'COD') {
+      const updatedOrder = await Order.findByIdAndUpdate(orderData._id, { status: 'confirmed' });
+      return ApiResponse.successOk(res, "Checkout data received successfully", updatedOrder);
+    }
+
     const options = {
-      amount: Number(req.body.amount * 100), // amount in the smallest currency unit
+      amount: Number(totalAmount * 100),
       currency: "INR",
-      receipt: "order_rcptid_11",
+      receipt: `order_rcptid_${orderData._id}`,
+      notes: {
+        orderId: orderData._id.toString(),
+        customerName: fullName,
+        phone,
+        email,
+      },
     };
 
-    const order = await instance.orders.create(options);
-    console.log(order, 'this is order');
-    return ApiResponse.successOk(res, "Order created successfully", order);
-
+    const razorOrder = await instance.orders.create(options);
+    console.log(razorOrder, 'this is order');
+    return ApiResponse.successOk(res, "Order created successfully", {
+      razorOrder,
+      orderData
+    });
   } catch (error) {
     console.error("Checkout Error:", error);
     return ApiResponse.fail(res,

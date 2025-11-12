@@ -11,6 +11,8 @@ const AddressSchema = new mongoose.Schema({
   street: { type: String, required: true },
   city: { type: String, required: true },
   state: { type: String, required: true },
+  dist: { type: String, required: true },
+  landmark: { type: String, default: "" },
   pincode: { type: String, required: true, match: /^\d{6}$/ },
 });
 
@@ -22,11 +24,9 @@ const OrderSchema = new mongoose.Schema(
     address: { type: AddressSchema, required: true },
     cart: { type: [OrderItemSchema], default: [] },
     totalAmount: { type: Number, required: true, min: 0 },
-    paymentMethod: { type: String, enum: ["COD", "UPI", "Card", "Wallet"], default: "COD" },
+    paymentMethod: { type: String, enum: ["COD", "Online"], default: "COD" },
     paymentStatus: { type: String, enum: ["pending", "paid", "failed"], default: "pending" },
     status: { type: String, enum: ["pending", "confirmed", "shipped", "delivered", "canceled", "refunded"], default: "pending" },
-    notes: { type: String },
-    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   },
   { timestamps: true }
 );

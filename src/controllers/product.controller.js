@@ -4,6 +4,7 @@ import Razorpay from 'razorpay';
 import crypto from 'crypto';
 import ApiResponse from "../utils/api.responses.js";
 import Order from "../models/Order.model.js";
+import { orderConfirmTemplate, sendEmail } from "../utils/send.email.js";
 
 const PAYMENT_SUCCESS_URL = "https://gangajal.onrender.com/payment-success";
 // const PAYMENT_SUCCESS_URL = "http://localhost:3000/payment-success";
@@ -70,7 +71,13 @@ const checkout = async (req, res) => {
     });
 
     if (paymentMethod === 'COD') {
-      const updatedOrder = await Order.findByIdAndUpdate(orderData._id, { status: 'confirmed' });
+      const updatedOrder = await Order.findByIdAndUpdate(orderData._id, { status: 'confirmed' }, { new: true }).lean();
+
+      await sendEmail(
+        email,
+        'Order Confirmation - Gangajal',
+        orderConfirmTemplate(updatedOrder)
+      );
       return ApiResponse.successOk(res, "Checkout data received successfully", updatedOrder);
     }
 

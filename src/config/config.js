@@ -12,6 +12,9 @@ export const config = {
 
   fromWhatsapp: process.env.FROM_WHATSAPP,
 
+  emailUser: process.env.EMAIL_USER,
+  emailPass: process.env.EMAIL_PASS,
+
 
   secretKeyJWT: process.env.ACCESS_TOKEN_SECRET,
   secretExpiryJWT: process.env.ACCESS_TOKEN_EXPIRY,

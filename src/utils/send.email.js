@@ -95,13 +95,13 @@ const sendEmail = async (to, subject, html) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "rk1759593@gmail.com",
-        pass: "zxwogluyigouxeoq",
+        user: config.emailUser,
+        pass: config.emailPass,
       },
     });
 
     const mailOptions = {
-      from: `"Pure Gangajal" <rk1759593@gmail.com>`,
+      from: `"Pure Gangajal" <${config.emailUser}>`,
       to,
       subject,
       html,
@@ -111,6 +111,7 @@ const sendEmail = async (to, subject, html) => {
     return info;
   } catch (error) {
     console.error("Email error =>", error);
+    console.error("Email error =>", error.message);
     throw error;
   }
 };

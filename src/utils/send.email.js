@@ -91,16 +91,17 @@ const orderConfirmTemplate = (orderData) => {
 
 const sendEmail = async (to, subject, html) => {
   try {
+    console.log("Email called =>", config.emailUser, config.emailPass);
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: config.emailUser,
-        pass: config.emailPass,
+        user: "rk1759593@gmail.com",
+        pass: "zxwogluyigouxeoq",
       },
     });
 
     const mailOptions = {
-      from: `"Pure Gangajal" <${config.emailUser}>`,
+      from: `"Pure Gangajal" <rk1759593@gmail.com>`,
       to,
       subject,
       html,

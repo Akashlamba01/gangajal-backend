@@ -93,10 +93,15 @@ const sendEmail = async (to, subject, html) => {
   try {
     console.log("Email called =>", config.emailUser, config.emailPass);
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false,
       auth: {
-        user: config.emailUser,
-        pass: config.emailPass,
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+      tls: {
+        rejectUnauthorized: false,
       },
     });
 

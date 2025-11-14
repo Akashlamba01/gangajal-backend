@@ -33,5 +33,8 @@ export const config = {
   cloudinaryProductRatting: process.env.CLOUDINARY_PRODUCT_RATTING,
 
   razorpayApiKey: process.env.RAZORPAY_API_KEY,
-  razorpayApiSecret: process.env.RAZORPAY_API_SECRET
+  razorpayApiSecret: process.env.RAZORPAY_API_SECRET,
+
+  sendgridApiKey: process.env.SENDGRID_API_KEY,
+  sendgridFrom: process.env.SENDGRID_FROM,
 }

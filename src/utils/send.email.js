@@ -1,6 +1,8 @@
 import nodemailer from "nodemailer";
 import { config } from "../config/config.js";
 
+import sendgridTransport from "nodemailer-sendgrid";
+
 const orderConfirmTemplate = (orderData) => {
   const {
     customerName,
@@ -91,23 +93,28 @@ const orderConfirmTemplate = (orderData) => {
 
 const sendEmail = async (to, subject, html) => {
   try {
-    console.log("Email called =>", config.emailUser, config.emailPass);
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-      tls: {
-        rejectUnauthorized: false,
-      },
-    });
+    console.log("Email called =>", config.emailUser, config.emailPass, config.sendgridApiKey);
+    // const transporter = nodemailer.createTransport({
+    //   service: "gmail",
+    //   secure: true,
+    //   auth: {
+    //     user: process.env.EMAIL_USER,
+    //     pass: process.env.EMAIL_PASS,
+    //   },
+    // });
+
+    const transporter = nodemailer.createTransport(
+      sendgridTransport({
+        apiKey: config.sendgridApiKey,
+      })
+    );
 
     const mailOptions = {
-      from: `"Pure Gangajal" <${config.emailUser}>`,
       to,
+      from: {
+        name: "Pure Gangajal",
+        address: config.sendgridFrom
+      },
       subject,
       html,
     };

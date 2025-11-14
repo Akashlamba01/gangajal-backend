@@ -102,7 +102,7 @@ const checkout = async (req, res) => {
   } catch (error) {
     console.error("Checkout Error:", error);
     return ApiResponse.fail(res,
-      "Internal server error.",
+      error.message || "Internal server error.",
       process.env.NODE_ENV === "development" ? { error: error.message } : null
     );
   }
